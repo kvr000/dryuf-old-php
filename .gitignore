@@ -1,0 +1,29 @@
+target
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# IDE files
+.*.sw?
+.idea
+*.iml
+tags
+
+# php project specific
+_root/_*
+_root/trans-*/_build
+_root/trans-*/php/_build
+_root/trans-*/php/_*
+_root/localize
+_root/log/*
+_root/third/*
+_root/php/_*

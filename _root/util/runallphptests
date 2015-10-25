@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+#set -o pipefail
+
+all=`find _root/php -follow -type f -name \?\*Test.php | sort | while read f; do echo $f | sed -e 's,_root/php/,,' -e 's,\.php$,,' -e 's,/,.,g'; done`
+
+`dirname $0`/runphptest $all

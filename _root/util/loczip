@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec zip -r9 ../p.zip _root/localize -x '*.sw?'

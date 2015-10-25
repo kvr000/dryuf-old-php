@@ -1,0 +1,6 @@
+src/main/java/net/dryuf/geo/GeoPosition.java
+src/main/java/net/dryuf/geo/GpxWriter.java
+src/main/java/net/dryuf/geo/KmlWriter.java
+src/main/java/net/dryuf/geo/Wgs84Util.java
+src/main/java/net/dryuf/geo/resolve/GeocodeResolver.java
+src/main/java/net/dryuf/geo/resolve/nominatim/NominatimGeocodeResolver.java

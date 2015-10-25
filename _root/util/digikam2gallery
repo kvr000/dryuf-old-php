@@ -1,0 +1,15 @@
+#!/usr/bin/env php
+<?php
+
+require_once dirname(__DIR__)."/init.php";
+
+
+\net\dryuf\core\Dryuf::$config['appRoot'] = "";
+
+\net\dryuf\core\Dryuf::$beans['imageResizeService'] = function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\service\image\php\ImagickResizeService(), $name, null); };
+
+
+exit(\net\dryuf\process\command\ExternalCommandRunner::createFromClassPath()->runNew('net\dryuf\comp\gallery\command\Digikam2GalleryCommand', array_slice($argv, 1)));
+
+
+?>

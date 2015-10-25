@@ -1,0 +1,12 @@
+#!/usr/bin/env php
+<?php
+
+require_once "_root/init.php";
+
+
+\net\dryuf\core\Dryuf::$config['localize.defaultLanguage']		= 'en';
+
+\net\dryuf\tenv\command\RunPhpTestCommand::main(array_slice($argv, 1));
+
+
+?>
