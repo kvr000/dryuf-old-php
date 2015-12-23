@@ -71,9 +71,9 @@ class BinaryReaderTest extends \net\dryuf\core\Object
 	@\net\dryuf\core\Type(type = 'void')
 	@\org\junit\Test
 	*/
-	public function			testVarInts()
+	public function			testBerInts()
 	{
-		\net\dryuf\tenv\DAssert::assertEquals(12, (new \net\dryuf\parse\BinaryReader(implode(array_map('chr', array( 12 )))))->readVarInt32("byte"));
+		\net\dryuf\tenv\DAssert::assertEquals(12, (new \net\dryuf\parse\BinaryReader(implode(array_map('chr', array( 12 )))))->readBerInt32("byte"));
 		\net\dryuf\tenv\DAssert::assertEquals(19770312, 
 			(new \net\dryuf\parse\BinaryReader(
 				implode(array_map('chr', array(
@@ -81,7 +81,7 @@ class BinaryReaderTest extends \net\dryuf\core\Object
 					(((((128+54))+0x80)&0xff)-0x80),
 					(((((128+87))+0x80)&0xff)-0x80),
 					72
-				)))))->readVarInt32("int"));
+				)))))->readBerInt32("int"));
 		\net\dryuf\tenv\DAssert::assertEquals(19770312022330, 
 			(new \net\dryuf\parse\BinaryReader(
 				implode(array_map('chr', array(
@@ -92,7 +92,74 @@ class BinaryReaderTest extends \net\dryuf\core\Object
 					(((((128+51))+0x80)&0xff)-0x80),
 					(((((128+50))+0x80)&0xff)-0x80),
 					58
-				)))))->readVarInt64("long"));
+				)))))->readBerInt64("long"));
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'void')
+	@\org\junit\Test
+	*/
+	public function			testPbufInts()
+	{
+		\net\dryuf\tenv\DAssert::assertEquals(12, (new \net\dryuf\parse\BinaryReader(implode(array_map('chr', array( 12 )))))->readPbufInt32("byte"));
+		\net\dryuf\tenv\DAssert::assertEquals(19770312, 
+			(new \net\dryuf\parse\BinaryReader(
+				implode(array_map('chr', array(
+					(((((128+72))+0x80)&0xff)-0x80),
+					(((((128+87))+0x80)&0xff)-0x80),
+					(((((128+54))+0x80)&0xff)-0x80),
+					9
+				)))))->readPbufInt32("int"));
+		\net\dryuf\tenv\DAssert::assertEquals(19770312022330, 
+			(new \net\dryuf\parse\BinaryReader(
+				implode(array_map('chr', array(
+					(((((128+58))+0x80)&0xff)-0x80),
+					(((((128+50))+0x80)&0xff)-0x80),
+					(((((128+51))+0x80)&0xff)-0x80),
+					(((((128+19))+0x80)&0xff)-0x80),
+					(((((128+50))+0x80)&0xff)-0x80),
+					(((((128+63))+0x80)&0xff)-0x80),
+					4
+				)))))->readPbufInt64("long"));
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'void')
+	@\org\junit\Test
+	*/
+	public function			testZigZagInts()
+	{
+		\net\dryuf\tenv\DAssert::assertEquals(12, (new \net\dryuf\parse\BinaryReader(implode(array_map('chr', array( 24 )))))->readZigZagInt32("byte"));
+		\net\dryuf\tenv\DAssert::assertEquals(19770312, 
+			(new \net\dryuf\parse\BinaryReader(
+				implode(array_map('chr', array(
+					(((((128+16))+0x80)&0xff)-0x80),
+					(((((128+47))+0x80)&0xff)-0x80),
+					(((((128+109))+0x80)&0xff)-0x80),
+					18
+				)))))->readZigZagInt32("int"));
+		\net\dryuf\tenv\DAssert::assertEquals(19770312022330, 
+			(new \net\dryuf\parse\BinaryReader(
+				implode(array_map('chr', array(
+					(((((128+116))+0x80)&0xff)-0x80),
+					(((((128+100))+0x80)&0xff)-0x80),
+					(((((128+102))+0x80)&0xff)-0x80),
+					(((((128+38))+0x80)&0xff)-0x80),
+					(((((128+100))+0x80)&0xff)-0x80),
+					(((((128+126))+0x80)&0xff)-0x80),
+					8
+				)))))->readZigZagInt64("long"));
+		\net\dryuf\tenv\DAssert::assertEquals(-1, 
+			(new \net\dryuf\parse\BinaryReader(
+				implode(array_map('chr', array(
+					1
+				)))))->readZigZagInt32("int"));
+		\net\dryuf\tenv\DAssert::assertEquals(-128, 
+			(new \net\dryuf\parse\BinaryReader(
+				implode(array_map('chr', array(
+					(((((128+127))+0x80)&0xff)-0x80),
+					(((((1))+0x80)&0xff)-0x80)
+				)))))->readZigZagInt64("long"));
 	}
 
 	/**

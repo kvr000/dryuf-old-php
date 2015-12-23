@@ -17,7 +17,7 @@ class BinaryWriter extends \net\dryuf\core\Object
 	/**
 	@\net\dryuf\core\Type(type = 'byte[]')
 	*/
-	public static function		createVarInt($number)
+	public static function		createBerInt($number)
 	{
 		$buff = implode(array_map('chr', array_fill(0, 16, 0)));
 		$i = strlen($buff);
@@ -26,6 +26,46 @@ class BinaryWriter extends \net\dryuf\core\Object
 			$buff[--$i] = chr(((((($number|128))+0x80)&0xff)-0x80));
 		}
 		return substr($buff, $i);
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'byte[]')
+	*/
+	public static function		createPbufInt32($number)
+	{
+		$buff = implode(array_map('chr', array_fill(0, 16, 0)));
+		$i = 0;
+		$buff[$i] = chr(((((($number|128))+0x80)&0xff)-0x80));
+		$number = ($number>>7)&0x7fffffff;
+		for ($base = 7; $number != 0; $base += 7, $number = ($number>>7)&0x7fffffff) {
+			$buff[++$i] = chr(((((($number|128))+0x80)&0xff)-0x80));
+		}
+		$buff[$i] = chr(ord($buff[$i])&127);
+		return substr($buff, 0, $i+1);
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'byte[]')
+	*/
+	public static function		createPbufInt64($number)
+	{
+		$buff = implode(array_map('chr', array_fill(0, 16, 0)));
+		$i = 0;
+		$buff[$i] = chr(((((($number|128))+0x80)&0xff)-0x80));
+		$number = ($number>>7)&0x7fffffffffffffff;
+		for ($base = 7; $number != 0; $base += 7, $number = ($number>>7)&0x7fffffffffffffff) {
+			$buff[++$i] = chr(((((($number|128))+0x80)&0xff)-0x80));
+		}
+		$buff[$i] = chr(ord($buff[$i])&127);
+		return substr($buff, 0, $i+1);
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'byte[]')
+	*/
+	public static function		createZigZagInt($number)
+	{
+		return \net\dryuf\parse\BinaryWriter::createPbufInt64(($number<<1)^($number>>63));
 	}
 
 	/**
@@ -149,9 +189,36 @@ class BinaryWriter extends \net\dryuf\core\Object
 	/**
 	@\net\dryuf\core\Type(type = 'net\dryuf\parse\BinaryWriter')
 	*/
-	public function			writeVarInt($number)
+	public function			writeBerInt($number)
 	{
-		$this->writeDirect(\net\dryuf\parse\BinaryWriter::createVarInt($number));
+		$this->writeDirect(\net\dryuf\parse\BinaryWriter::createBerInt($number));
+		return $this;
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'net\dryuf\parse\BinaryWriter')
+	*/
+	public function			writePbufInt32($number)
+	{
+		$this->writeDirect(\net\dryuf\parse\BinaryWriter::createPbufInt32($number));
+		return $this;
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'net\dryuf\parse\BinaryWriter')
+	*/
+	public function			writePbufInt64($number)
+	{
+		$this->writeDirect(\net\dryuf\parse\BinaryWriter::createPbufInt64($number));
+		return $this;
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'net\dryuf\parse\BinaryWriter')
+	*/
+	public function			writeZigZagInt($number)
+	{
+		$this->writeDirect(\net\dryuf\parse\BinaryWriter::createZigZagInt($number));
 		return $this;
 	}
 
@@ -237,7 +304,7 @@ class BinaryWriter extends \net\dryuf\core\Object
 	*/
 	public function			writeVarBytes($data)
 	{
-		$this->writeVarInt(strlen($data));
+		$this->writePbufInt32(strlen($data));
 		$this->writeDirect($data);
 		return $this;
 	}

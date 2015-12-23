@@ -71,9 +71,9 @@ class BinaryWriterTest extends \net\dryuf\core\Object
 	@\net\dryuf\core\Type(type = 'void')
 	@\org\junit\Test
 	*/
-	public function			testVarInts()
+	public function			testBerInts()
 	{
-		\net\dryuf\tenv\DAssert::assertEquals(implode(array_map('chr', array( 12 ))), (new \net\dryuf\parse\BinaryWriter())->writeVarInt(12)->getContent());
+		\net\dryuf\tenv\DAssert::assertEquals(implode(array_map('chr', array( 12 ))), (new \net\dryuf\parse\BinaryWriter())->writeBerInt(12)->getContent());
 		\net\dryuf\tenv\DAssert::assertEquals(
 			implode(array_map('chr', array(
 				(((((128+9))+0x80)&0xff)-0x80),
@@ -81,7 +81,7 @@ class BinaryWriterTest extends \net\dryuf\core\Object
 				(((((128+87))+0x80)&0xff)-0x80),
 				72
 			))), 
-			(new \net\dryuf\parse\BinaryWriter())->writeVarInt(19770312)->getContent());
+			(new \net\dryuf\parse\BinaryWriter())->writeBerInt(19770312)->getContent());
 		\net\dryuf\tenv\DAssert::assertEquals(
 			implode(array_map('chr', array(
 				(((((128+4))+0x80)&0xff)-0x80),
@@ -92,7 +92,70 @@ class BinaryWriterTest extends \net\dryuf\core\Object
 				(((((128+50))+0x80)&0xff)-0x80),
 				58
 			))), 
-			(new \net\dryuf\parse\BinaryWriter())->writeVarInt(19770312022330)->getContent());
+			(new \net\dryuf\parse\BinaryWriter())->writeBerInt(19770312022330)->getContent());
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'void')
+	@\org\junit\Test
+	*/
+	public function			testPbufInts()
+	{
+		\net\dryuf\tenv\DAssert::assertEquals(implode(array_map('chr', array( 12 ))), (new \net\dryuf\parse\BinaryWriter())->writePbufInt32(12)->getContent());
+		\net\dryuf\tenv\DAssert::assertEquals(
+			implode(array_map('chr', array(
+				(((((128+72))+0x80)&0xff)-0x80),
+				(((((128+87))+0x80)&0xff)-0x80),
+				(((((128+54))+0x80)&0xff)-0x80),
+				9
+			))), 
+			(new \net\dryuf\parse\BinaryWriter())->writePbufInt32(19770312)->getContent());
+		\net\dryuf\tenv\DAssert::assertEquals(
+			implode(array_map('chr', array(
+				(((((128+58))+0x80)&0xff)-0x80),
+				(((((128+50))+0x80)&0xff)-0x80),
+				(((((128+51))+0x80)&0xff)-0x80),
+				(((((128+19))+0x80)&0xff)-0x80),
+				(((((128+50))+0x80)&0xff)-0x80),
+				(((((128+63))+0x80)&0xff)-0x80),
+				4
+			))), 
+			(new \net\dryuf\parse\BinaryWriter())->writePbufInt64(19770312022330)->getContent());
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'void')
+	@\org\junit\Test
+	*/
+	public function			testZigZagInts()
+	{
+		\net\dryuf\tenv\DAssert::assertEquals(implode(array_map('chr', array( 24 ))), (new \net\dryuf\parse\BinaryWriter())->writeZigZagInt(12)->getContent());
+		\net\dryuf\tenv\DAssert::assertEquals(
+			implode(array_map('chr', array(
+				(((((128+16))+0x80)&0xff)-0x80),
+				(((((128+47))+0x80)&0xff)-0x80),
+				(((((128+109))+0x80)&0xff)-0x80),
+				18
+			))), 
+			(new \net\dryuf\parse\BinaryWriter())->writeZigZagInt(19770312)->getContent());
+		\net\dryuf\tenv\DAssert::assertEquals(
+			implode(array_map('chr', array(
+				(((((128+116))+0x80)&0xff)-0x80),
+				(((((128+100))+0x80)&0xff)-0x80),
+				(((((128+102))+0x80)&0xff)-0x80),
+				(((((128+38))+0x80)&0xff)-0x80),
+				(((((128+100))+0x80)&0xff)-0x80),
+				(((((128+126))+0x80)&0xff)-0x80),
+				8
+			))), 
+			(new \net\dryuf\parse\BinaryWriter())->writeZigZagInt(19770312022330)->getContent());
+		\net\dryuf\tenv\DAssert::assertEquals(implode(array_map('chr', array( 1 ))), (new \net\dryuf\parse\BinaryWriter())->writeZigZagInt(-1)->getContent());
+		\net\dryuf\tenv\DAssert::assertEquals(
+			implode(array_map('chr', array(
+				(((((128+127))+0x80)&0xff)-0x80),
+				(((((1))+0x80)&0xff)-0x80)
+			))), 
+			(new \net\dryuf\parse\BinaryWriter())->writeZigZagInt(-128)->getContent());
 	}
 
 	/**

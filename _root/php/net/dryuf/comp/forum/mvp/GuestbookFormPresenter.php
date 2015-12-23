@@ -85,7 +85,7 @@ class GuestbookFormPresenter extends \net\dryuf\mvp\BeanFormPresenter
 		$name = $backing->getName();
 		$email = $backing->getEmail();
 		$webpage = $backing->getWebpage();
-		$content = $backing->getContent();
+		$content = \net\dryuf\core\StringUtil::replaceRegExp($backing->getContent(), "\r\n", "\n");
 		$ids = \net\dryuf\comp\forum\mvp\GuestbookFormPresenter::encodeIdentity($name, $email, $webpage);
 		$forumRecord = new \net\dryuf\comp\forum\ForumRecord();
 		$forumRecord->setContent($content);

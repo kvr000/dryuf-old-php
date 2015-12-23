@@ -39,7 +39,48 @@ class BinaryReader extends \net\dryuf\core\Object
 	/**
 	@\net\dryuf\core\Type(type = 'int')
 	*/
-	public function			readVarInt32($name)
+	public function			readBerInt32($name)
+	{
+		$number = 0;
+		$ch = ord($this->content[$this->pos++]);
+		while (($ch&128) != 0) {
+			$number |= $ch&127;
+			$number <<= 7;
+			$ch = ord($this->content[$this->pos++]);
+		}
+		$number |= $ch;
+		return $number;
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'int')
+	*/
+	public function			readPbufInt32($name)
+	{
+		$ch = ord($this->content[$this->pos++]);
+		$number = $ch&127;
+		for ($base = 7; ($ch&128) != 0; $base += 7) {
+			$ch = ord($this->content[$this->pos++]);
+			if ($base >= 28 && $ch >= 16)
+				throw new \net\dryuf\core\IllegalArgumentException("Overflow while reading ".$name);
+			$number |= (($ch&127)<<$base);
+		}
+		return $number;
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'int')
+	*/
+	public function			readZigZagInt32($name)
+	{
+		$n = $this->readPbufInt32($name);
+		return (-($n&1))^(($n>>1)&0x7fffffff);
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'long')
+	*/
+	public function			readBerInt64($name)
 	{
 		$number = 0;
 		$ch = ord($this->content[$this->pos++]);
@@ -55,17 +96,26 @@ class BinaryReader extends \net\dryuf\core\Object
 	/**
 	@\net\dryuf\core\Type(type = 'long')
 	*/
-	public function			readVarInt64($name)
+	public function			readPbufInt64($name)
 	{
-		$number = 0;
 		$ch = ord($this->content[$this->pos++]);
-		while (($ch&128) != 0) {
-			$number |= $ch&127;
-			$number <<= 7;
+		$number = $ch&127;
+		for ($base = 7; ($ch&128) != 0; $base += 7) {
 			$ch = ord($this->content[$this->pos++]);
+			if ($base >= 63 && $ch >= 2)
+				throw new \net\dryuf\core\IllegalArgumentException("Overflow while reading ".$name);
+			$number |= (($ch&127)<<$base);
 		}
-		$number |= $ch;
 		return $number;
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'long')
+	*/
+	public function			readZigZagInt64($name)
+	{
+		$n = $this->readPbufInt64($name);
+		return (-($n&1))^(($n>>1)&0x7fffffffffffffff);
 	}
 
 	/**
@@ -202,7 +252,7 @@ class BinaryReader extends \net\dryuf\core\Object
 	*/
 	public function			readVarBytes($max_size, $name)
 	{
-		$length = $this->readVarInt32($name);
+		$length = $this->readPbufInt32($name);
 		if ($length > $max_size)
 			throw new \net\dryuf\core\ArrayIndexOutOfBoundsException("length > max_size for ".$name);
 		return $this->readBytes($length, $name);
