@@ -45,7 +45,7 @@ class ListRenderer extends \net\dryuf\datagrid\DataPresenterRenderer
 	*/
 	public function			getListCss()
 	{
-		return "net-dryuf-datagrid-DataPresenter-list-behaviour";
+		return \net\dryuf\core\Dryuf::dashClassname('net\dryuf\datagrid\DataPresenter')."-list-behaviour";
 	}
 
 	/**

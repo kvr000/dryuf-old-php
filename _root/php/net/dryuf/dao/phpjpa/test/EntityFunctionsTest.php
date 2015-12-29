@@ -97,6 +97,7 @@ class EntityFunctionsTest extends \net\dryuf\tenv\AppTenvObject
 	{
 		$this->runTransactionedNew(function () {
 			$tc = new \net\dryuf\tenv\TestMain();
+			$tc->setName(__CLASS__.".testPersist");
 			$tc->setSvalue("test");
 			$this->em->persist($tc);
 		});
@@ -109,6 +110,7 @@ class EntityFunctionsTest extends \net\dryuf\tenv\AppTenvObject
 	{
 		$this->runTransactionedNew(function () {
 			$tm = new \net\dryuf\tenv\TestMain();
+			$tm->setName(__CLASS__.".testChild");
 			$tm->setSvalue("test");
 			$this->em->persist($tm);
 			$this->em->createQuery("DELETE FROM TestChild")->executeUpdate();
@@ -129,6 +131,7 @@ class EntityFunctionsTest extends \net\dryuf\tenv\AppTenvObject
 		try {
 			$this->runTransactionedNew(function () {
 				$tm = new \net\dryuf\tenv\TestMain();
+				$tm->setName(__CLASS__.".testTransaction");
 				$tm->setSvalue(__CLASS__);
 				$this->em->persist($tm);
 				throw new \Exception("do rollback");

@@ -1,6 +1,6 @@
 <?php
 
-namespace net\dryuf\dao\mysql\test;
+namespace net\dryuf\dao\test;
 
 
 /**

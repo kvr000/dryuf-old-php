@@ -19,6 +19,7 @@ class TestEnt extends \net\dryuf\core\Object
 	/**
 	@\net\dryuf\core\Type(type = 'java\lang\Long')
 	@\javax\persistence\Id
+	@\javax\persistence\GeneratedValue(strategy = \javax\persistence\GenerationType::AUTO)
 	@\javax\persistence\Column(name = "testId")
 	*/
 	public				$testId;

@@ -70,8 +70,8 @@ src/main/java/net/dryuf/dao/RoleQuery.java
 src/main/java/net/dryuf/dao/ViewSupplier.java
 src/main/java/net/dryuf/dao/jpa/JpaUtil.java
 src/main/java/net/dryuf/dao/mysql/JpaExceptionTranslatorMysql.java
-src/test/java/net/dryuf/dao/mysql/test/JpaExceptionTranslateTest.java
-src/test/java/net/dryuf/dao/mysql/test/TestEntOperTest.java
+src/test/java/net/dryuf/dao/test/JpaExceptionTranslateTest.java
+src/test/java/net/dryuf/dao/test/TestEntOperTest.java
 src/main/java/net/dryuf/dao/test/common/AbstractTestEntOperBase.java
 src/main/java/net/dryuf/dao/test/data/TestEnt.java
 src/main/java/net/dryuf/dao/test/data/dao/GenericDryufDao.java

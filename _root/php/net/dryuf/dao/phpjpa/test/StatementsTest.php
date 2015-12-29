@@ -92,6 +92,7 @@ class StatementsTest extends \net\dryuf\tenv\AppTenvObject
 		$t = intval(microtime(true)*1000)%1000000000;
 		$this->cleanTestMain();
 		$tm = new \net\dryuf\tenv\TestMain();
+		$tm->setName(__CLASS__);
 		$tm->setIvalue($t);
 		$tm->setSvalue("test0");
 		$this->insertTestMain($tm);
@@ -153,6 +154,7 @@ class StatementsTest extends \net\dryuf\tenv\AppTenvObject
 		$this->cleanTestMain();
 		$tc = new \net\dryuf\tenv\TestMain();
 		$tc->setIvalue($tm);
+		$tc->setName(__CLASS__.".testDelete");
 		$tc->setSvalue("test");
 		$this->insertTestMain($tc);
 
@@ -204,12 +206,16 @@ class StatementsTest extends \net\dryuf\tenv\AppTenvObject
 		$this->cleanTestMain();
 		$tm = new \net\dryuf\tenv\TestMain();
 		$tm->setIvalue($t);
+		$tm->setName(__CLASS__.".testSelectOrder-1");
 		$tm->setSvalue("test1");
 		$this->insertTestMain($tm);
+		$tm->setName(__CLASS__.".testSelectOrder-2");
 		$tm->setSvalue("test2");
 		$this->insertTestMain($tm);
+		$tm->setName(__CLASS__.".testSelectOrder-4");
 		$tm->setSvalue("test4");
 		$this->insertTestMain($tm);
+		$tm->setName(__CLASS__.".testSelectOrder-3");
 		$tm->setSvalue("test3");
 		$this->insertTestMain($tm);
 

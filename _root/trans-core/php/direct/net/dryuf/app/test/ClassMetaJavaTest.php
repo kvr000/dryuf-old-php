@@ -33,10 +33,11 @@ class ClassMetaJavaTest extends \net\dryuf\tenv\AppTenvObject
 		\net\dryuf\tenv\DAssert::assertNull($meta->getComposPath(), "");
 		\net\dryuf\tenv\DAssert::assertNull($meta->getComposPkClass());
 		\net\dryuf\tenv\DAssert::assertEquals(0, count($meta->getAdditionalPkFields()));
-		\net\dryuf\tenv\DAssert::assertEquals(3, count($meta->getFields()));
+		\net\dryuf\tenv\DAssert::assertEquals(4, count($meta->getFields()));
 		\net\dryuf\tenv\DAssert::assertEquals("testId", $meta->getFields()[0]->getName());
-		\net\dryuf\tenv\DAssert::assertEquals("svalue", $meta->getFields()[1]->getName());
-		\net\dryuf\tenv\DAssert::assertEquals("ivalue", $meta->getFields()[2]->getName());
+		\net\dryuf\tenv\DAssert::assertEquals("name", $meta->getFields()[1]->getName());
+		\net\dryuf\tenv\DAssert::assertEquals("svalue", $meta->getFields()[2]->getName());
+		\net\dryuf\tenv\DAssert::assertEquals("ivalue", $meta->getFields()[3]->getName());
 		\net\dryuf\tenv\DAssert::assertEquals("testId", $meta->getRefName());
 		\net\dryuf\tenv\DAssert::assertEquals(1, count($meta->getDisplayKeys()));
 		\net\dryuf\tenv\DAssert::assertEquals("testId", $meta->getDisplayKeys()[0]);

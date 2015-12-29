@@ -463,6 +463,8 @@ class Dryuf
 	 */
 	public static function		hashCodeObject($arg)
 	{
+		if (is_null($arg))
+			throw new \net\dryuf\core\NullPointerException("arg");
 		return is_string($arg) ? ord($arg) : (is_int($arg) ? $arg : (is_bool($arg) ? intval($arg) : (is_float($arg) ? intval($arg) : (is_array($arg) ? count($arg) : $arg->hashCode()))));
 	}
 

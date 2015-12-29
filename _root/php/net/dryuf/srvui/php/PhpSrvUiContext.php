@@ -233,11 +233,11 @@ class PhpSrvUiContext implements \net\dryuf\core\UiContext
 		$classname = $fname = preg_replace('/(::|\.|\\\\)/', '.', $classname);
 		$localizeClazz = \net\dryuf\core\Dryuf::getConfigDefault("localize.clazz", 'net\dryuf\keydb\DbaKeyValueDb');
 		try {
-			$clocalizer = $localizeClazz::open("$this->localizePath/$this->language/_cls/$fname.cls");
+			$clocalizer = $localizeClazz::open("$this->localizePath/$this->language/_class/$fname.localize");
 		}
 		catch (\net\dryuf\core\Exception $ex) {
 			try {
-				$clocalizer = $localizeClazz::open("$this->localizePath/$this->defaultLanguage/_cls/$fname.cls");
+				$clocalizer = $localizeClazz::open("$this->localizePath/$this->defaultLanguage/_class/$fname.localize");
 			}
 			catch (\net\dryuf\core\Exception $ex2) {
 				return new \net\dryuf\util\php\NativeHashMap();

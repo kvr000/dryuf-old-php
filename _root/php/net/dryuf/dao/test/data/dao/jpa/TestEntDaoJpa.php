@@ -25,6 +25,7 @@ class TestEntDaoJpa extends \net\dryuf\core\Object implements \net\dryuf\dao\tes
 
 	/**
 	@\net\dryuf\core\Type(type = 'void')
+	@\org\springframework\transaction\annotation\Transactional(value = "dryuf")
 	@\javax\ejb\TransactionAttribute(value = \javax\ejb\TransactionAttributeType::REQUIRES_NEW)
 	*/
 	public function			insert($obj)
@@ -35,6 +36,7 @@ class TestEntDaoJpa extends \net\dryuf\core\Object implements \net\dryuf\dao\tes
 
 	/**
 	@\net\dryuf\core\Type(type = 'void')
+	@\org\springframework\transaction\annotation\Transactional(value = "dryuf")
 	@\javax\ejb\TransactionAttribute(value = \javax\ejb\TransactionAttributeType::REQUIRES_NEW)
 	*/
 	public function			update($obj)
@@ -45,6 +47,7 @@ class TestEntDaoJpa extends \net\dryuf\core\Object implements \net\dryuf\dao\tes
 
 	/**
 	@\net\dryuf\core\Type(type = 'void')
+	@\org\springframework\transaction\annotation\Transactional(value = "dryuf")
 	@\javax\ejb\TransactionAttribute(value = \javax\ejb\TransactionAttributeType::REQUIRES_NEW)
 	*/
 	public function			remove($obj)

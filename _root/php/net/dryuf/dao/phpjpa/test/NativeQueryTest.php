@@ -73,6 +73,7 @@ class NativeQueryTest extends \net\dryuf\tenv\AppTenvObject
 			if (is_null($testMain)) {
 				$testMain = new \net\dryuf\tenv\TestMain();
 				$testMain->setIvalue(intval(microtime(true)*1000));
+				$testMain->setName(__CLASS__);
 				$testMain->setSvalue(__CLASS__);
 				$this->em->persist($testMain);
 			}

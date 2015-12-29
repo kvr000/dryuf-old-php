@@ -7,7 +7,7 @@ namespace net\dryuf\tenv;
 @\net\dryuf\meta\ActionDefs(actions = { })
 @\net\dryuf\meta\FilterDefs(filters = { })
 @\net\dryuf\meta\PKeyDef(pkEmbedded = false, pkClazz = 'integer', pkField = "testId", composClazz = 'void', composPkClazz = 'void', composPath = "", additionalPkFields = { })
-@\net\dryuf\meta\FieldOrder(fields = { "testId", "svalue", "ivalue" })
+@\net\dryuf\meta\FieldOrder(fields = { "testId", "name", "svalue", "ivalue" })
 @\net\dryuf\meta\ViewsList(views = {
 	@\net\dryuf\meta\ViewInfo(name = "Default")
 })
@@ -41,6 +41,16 @@ class TestMain extends \net\dryuf\core\Object
 	@\net\dryuf\meta\Mandatory(mandatory = true)
 	*/
 	protected			$testId;
+
+	/**
+	@\net\dryuf\core\Type(type = 'java\lang\String')
+	@\javax\persistence\Column(name = "name")
+	@\net\dryuf\textual\TextualUse(textual = 'net\dryuf\textual\TrimTextual')
+	@\net\dryuf\textual\DisplayUse(display = "text(160px)")
+	@\net\dryuf\meta\FieldRoles(roleNew = "guest", roleGet = "guest", roleSet = "guest", roleDel = "guest")
+	@\net\dryuf\meta\Mandatory(mandatory = true)
+	*/
+	protected			$name;
 
 	/**
 	@\net\dryuf\core\Type(type = 'java\lang\String')
@@ -92,6 +102,22 @@ class TestMain extends \net\dryuf\core\Object
 	public function			getTestId()
 	{
 		return $this->testId;
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'void')
+	*/
+	public function			setName($name_)
+	{
+		$this->name = $name_;
+	}
+
+	/**
+	@\net\dryuf\core\Type(type = 'java\lang\String')
+	*/
+	public function			getName()
+	{
+		return $this->name;
 	}
 
 	/**

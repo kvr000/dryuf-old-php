@@ -29,6 +29,7 @@ require_once "net/dryuf/core/Dryuf.php";
 \net\dryuf\core\Dryuf::$config['app.sysRoles']             		= array("guest", "free", "user", "admin", "sysconf", "extreme", "translation", "devel", "timing");
 
 \net\dryuf\core\Dryuf::$config['net.dryuf.dao.appdb']			= "driver=net.dryuf.sql.mysqli.MysqliConnection;host=localhost;user=dryuf;pass=dryuf;db=dryuf";
+#\net\dryuf\core\Dryuf::$config['net.dryuf.dao.appdb']			= "driver=net.dryuf.sql.sqlite3.Sqlite3Connection;file=:memory:;open_mode=2";
 \net\dryuf\core\Dryuf::$config['net.dryuf.dao.nominatim']		= "driver=net.dryuf.sql.pgsql.PgsqlConnection;db=nominatim";
 
 \net\dryuf\core\Dryuf::$config['net.dryuf.nocache']	       		= false;
@@ -71,6 +72,8 @@ require_once "net/dryuf/core/Dryuf.php";
 
 \net\dryuf\core\Dryuf::$beans['genericDryufDao']			= function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\dao\test\data\dao\jpa\GenericDryufDaoJpa(), $name, null); };
 
+\net\dryuf\core\Dryuf::$beans['testMainDao']				= function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\tenv\jpadao\TestMainDaoJpa(), $name, null); };
+\net\dryuf\core\Dryuf::$beans['testChildDao']				= function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\tenv\jpadao\TestChildDaoJpa(), $name, null); };
 \net\dryuf\core\Dryuf::$beans['testEntDao']				= function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\dao\test\data\dao\jpa\TestEntDaoJpa(), $name, null); };
 
 \net\dryuf\core\Dryuf::$beans['userAccountDao']				= function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\security\jpadao\UserAccountDaoJpa(), $name, null); };

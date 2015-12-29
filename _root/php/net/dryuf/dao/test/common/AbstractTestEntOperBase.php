@@ -17,41 +17,12 @@ class AbstractTestEntOperBase extends \net\dryuf\core\Object
 
 	/**
 	@\net\dryuf\core\Type(type = 'void')
-	*/
-	public function			runSqlSafe($sql)
-	{
-		try {
-			$this->genericDryufDao->runNativeUpdate($sql);
-		}
-		catch (\net\dryuf\core\Exception $ex) {
-		}
-	}
-
-	/**
-	@\net\dryuf\core\Type(type = 'void')
-	*/
-	public function			runSql($sql)
-	{
-		$this->genericDryufDao->runNativeUpdate($sql);
-	}
-
-	/**
-	@\net\dryuf\core\Type(type = 'void')
-	@\org\junit\Before
-	*/
-	public function			createStructure()
-	{
-		$this->runSql("DELETE FROM TestEnt");
-	}
-
-	/**
-	@\net\dryuf\core\Type(type = 'void')
 	@\org\junit\Test
 	*/
 	public function			testCorrect()
 	{
 		$te0 = new \net\dryuf\dao\test\data\TestEnt();
-		$te0->setTestId(1);
+		$te0->setName(\net\dryuf\core\Dryuf::dotClassname(get_class($this)).".testCorrect");
 		$this->testEntDao->insert($te0);
 	}
 
@@ -62,11 +33,10 @@ class AbstractTestEntOperBase extends \net\dryuf\core\Object
 	public function			testDaoPrimaryKeyConstraint()
 	{
 		$te0 = new \net\dryuf\dao\test\data\TestEnt();
-		$te0->setTestId(2);
+		$te0->setName(\net\dryuf\core\Dryuf::dotClassname(get_class($this)).".testDaoPrimaryKeyConstraint.0");
 		$this->testEntDao->insert($te0);
 		$te1 = new \net\dryuf\dao\test\data\TestEnt();
-		$te1->setTestId(2);
-		$this->testEntDao->insert($te1);
+		$this->genericDryufDao->runNativeUpdate("INSERT INTO TestEnt (testId, name, nonull) values (".$te0->getTestId().", '".\net\dryuf\core\Dryuf::dotClassname(get_class($this)).".testDaoPrimaryKeyConstraint.1"."', 'a')");
 	}
 
 	/**
@@ -76,7 +46,7 @@ class AbstractTestEntOperBase extends \net\dryuf\core\Object
 	public function			testDaoBadNullConstraintException()
 	{
 		$te0 = new \net\dryuf\dao\test\data\TestEnt();
-		$te0->setTestId(3);
+		$te0->setName(\net\dryuf\core\Dryuf::dotClassname(get_class($this)).".testDaoBadNullConstraintException");
 		$te0->setNonull(null);
 		$this->testEntDao->insert($te0);
 	}
@@ -88,13 +58,13 @@ class AbstractTestEntOperBase extends \net\dryuf\core\Object
 	public function			testDaoUniqueConstraintException()
 	{
 		$te0 = new \net\dryuf\dao\test\data\TestEnt();
-		$te0->setTestId(4);
+		$te0->setName(\net\dryuf\core\Dryuf::dotClassname(get_class($this)).".testDaoUniqueConstraintException.0");
 		$te0->setUniq("four");
 		$this->testEntDao->insert($te0);
 		$te1 = new \net\dryuf\dao\test\data\TestEnt();
-		$te1->setTestId(5);
+		$te1->setName(\net\dryuf\core\Dryuf::dotClassname(get_class($this)).".testDaoUniqueConstraintException.1");
 		$te1->setUniq("four");
-		$this->testEntDao->insert($te1);
+		$this->testEntDao->update($te1);
 	}
 
 	/**
