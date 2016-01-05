@@ -83,7 +83,7 @@ class PhpEmailSender implements \net\dryuf\service\mail\EmailSender
 			."Content-Disposition: attachment; filename=\"".$filename."\"\n\n"
 			.$base64."\n\n"
 			."--".$uid."--"; 
-		if (!mail($to, \net\dryuf\service\text\Utf8::convertToAscii($subject), "", $headers)) {
+		if (!mail($to, \net\dryuf\text\util\TextUtil::transliterate($subject), "", $headers)) {
 			throw new \net\dryuf\core\Exception("failed to send e-mail to $to");
 		}
 	}

@@ -6,7 +6,7 @@ require_once dirname(__DIR__)."/init.php";
 \net\dryuf\core\Dryuf::$config['appRoot'] = "";
 
 
-exit((new \net\dryuf\process\command\ExternalCommandRunner(\net\dryuf\web\php\PhpContextManager::createCallerContext()))->runNew('net\dryuf\comp\gallery\command\GalleryUploadCommand', array_slice($argv, 1)));
+exit((new \net\dryuf\process\command\ExternalCommandRunner(\net\dryuf\mvp\php\PhpContextManager::createCallerContext()))->runNew('net\dryuf\comp\gallery\command\GalleryUploadCommand', array_slice($argv, 1)));
 
 
 ?>

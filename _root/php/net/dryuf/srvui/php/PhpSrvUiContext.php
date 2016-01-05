@@ -151,7 +151,7 @@ class PhpSrvUiContext implements \net\dryuf\core\UiContext
 
 		$localizeClazz = $this->appContainer->getConfigValue("localize.clazz", 'net\dryuf\keydb\DbaKeyValueDb');
 		try {
-			$this->localizer = $localizeClazz::open("$this->localizePath/$this->language/_dict");
+			$this->localizer = $localizeClazz::open("$this->localizePath/$this->language/_messages.localize");
 		}
 		catch (\net\dryuf\core\Exception $ex) {
 			$this->localizeLog->logfError("open db %s failed: %s", "$this->localizePath/$this->language/_messages.localize", $ex->__toString());
