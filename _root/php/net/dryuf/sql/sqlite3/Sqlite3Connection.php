@@ -85,19 +85,27 @@ class Sqlite3Connection implements \net\dryuf\sql\Connection
 
 	function			setAutoCommit($enable)
 	{
-		if ($enable)
-			$this->runDirect("BEGIN");
-		else
-			$this->commit();
+		if ($enable) {
+			if ($this->transctioned)
+				$this->commit();
+		}
+		else {
+			if (!$this->transactioned) {
+				$this->runDirect("BEGIN");
+				$this->transactioned = true;
+			}
+		}
 	}
 
 	function			commit()
 	{
+		$this->transactioned = false;
 		$this->runDirect("COMMIT");
 	}
 
 	function			rollback()
 	{
+		$this->transactioned = false;
 		$this->runDirect("ROLLBACK");
 	}
 
@@ -213,6 +221,7 @@ class Sqlite3Connection implements \net\dryuf\sql\Connection
 
 	function			runDirect($statement)
 	{
+		assert(!is_null($this->sqlite3_handle), "not closed");
 		if (!$this->sqlite3_handle->query($statement)) {
 			$this->throwSqlException();
 		}
@@ -228,6 +237,8 @@ class Sqlite3Connection implements \net\dryuf\sql\Connection
 	}
 
 	public				$sqlite3_handle;
+
+	protected			$transactioned;
 };
 
 

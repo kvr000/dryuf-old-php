@@ -37,52 +37,37 @@
 namespace net\dryuf\sql;
 
 
-class ConnectionManager implements \javax\sql\DataSource
+class SingletonConnectionManagerConnection extends \net\dryuf\sql\ConnectionManagerConnection
 {
-	static function			openStaticConnection($connectUrl)
+	public function			__construct($manager, $targetConnection)
 	{
-		$self = new self();
-		$self->connectUrl = $connectUrl;
-		return $self->getConnection();
+		parent::__construct($manager, $targetConnection);
 	}
 
-	function			getConnection()
+	public function			close()
 	{
-		if (is_null($connection = array_pop($this->pool))) {
-			if (!preg_match('/;driver=([A-Za-z0-9\\\\:._]+);/', ";$this->connectUrl;", $regs))
-				throw new \net\dryuf\sql\SqlException(-1, -1, "driver not specified in connect URL");
-			$driver = $regs[1];
-			if (preg_match('/(::|\\\\)([a-z0-9]+)$/', $driver, $regs))
-				$driver .= "\\".\ucfirst($regs[2])."Connection";
-			$connection = $this->doWrapConnection(\net\dryuf\core\Dryuf::callClassStatic($driver, "openNew", array($this->connectUrl)));
-		}
-		return $connection;
+		$this->manager->releaseConnection($this);
 	}
 
-	function			releaseConnection($connection)
+	public function			increaseNested()
 	{
-		$connection->rollback();
-		array_push($this->pool, $connection);
+		++$this->counter;
 	}
 
-	function			doWrapConnection($nativeConnection)
+	public function			commit()
 	{
-		$connection = new \net\dryuf\sql\ConnectionManagerConnection($this, $nativeConnection);
-		$connection->setManager($this);
-		return $connection;
+		if (--$this->counter == 0)
+			parent::commit();
 	}
 
-	function			getUseCache()
+	public function			rollback()
 	{
-		return $this->useCache;
+		if (--$this->counter == 0)
+			parent::rollback();
 	}
 
-	protected			$connectUrl;
-
-	protected			$pool = array();
-
-	protected			$useCache = true;
-}
+	protected			$counter;
+};
 
 
 ?>

@@ -37,51 +37,27 @@
 namespace net\dryuf\sql;
 
 
-class ConnectionManager implements \javax\sql\DataSource
+class InitializableConnectionManager implements \javax\sql\DataSource
 {
-	static function			openStaticConnection($connectUrl)
+	function			__construct($supplyingDataSource, $initScripts)
 	{
-		$self = new self();
-		$self->connectUrl = $connectUrl;
-		return $self->getConnection();
-	}
+		$this->supplyingDataSource = $supplyingDataSource;
 
-	function			getConnection()
-	{
-		if (is_null($connection = array_pop($this->pool))) {
-			if (!preg_match('/;driver=([A-Za-z0-9\\\\:._]+);/', ";$this->connectUrl;", $regs))
-				throw new \net\dryuf\sql\SqlException(-1, -1, "driver not specified in connect URL");
-			$driver = $regs[1];
-			if (preg_match('/(::|\\\\)([a-z0-9]+)$/', $driver, $regs))
-				$driver .= "\\".\ucfirst($regs[2])."Connection";
-			$connection = $this->doWrapConnection(\net\dryuf\core\Dryuf::callClassStatic($driver, "openNew", array($this->connectUrl)));
+		$connection = $supplyingDataSource->getConnection();
+		try {
+			foreach ($initScripts as $script) {
+				$this->loadScript($connection, $script);
+			}
 		}
-		return $connection;
+		finally {
+			$connection->close();
+		}
 	}
 
-	function			releaseConnection($connection)
+	function			loadScript($connection, $script)
 	{
-		$connection->rollback();
-		array_push($this->pool, $connection);
+		$connection->runDirect(file_get_contents($script));
 	}
-
-	function			doWrapConnection($nativeConnection)
-	{
-		$connection = new \net\dryuf\sql\ConnectionManagerConnection($this, $nativeConnection);
-		$connection->setManager($this);
-		return $connection;
-	}
-
-	function			getUseCache()
-	{
-		return $this->useCache;
-	}
-
-	protected			$connectUrl;
-
-	protected			$pool = array();
-
-	protected			$useCache = true;
 }
 
 

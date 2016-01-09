@@ -37,15 +37,25 @@
 namespace net\dryuf\sql;
 
 
-class SingletonTestConnectionManager extends \net\dryuf\sql\ConnectionManager
+class SingletonConnectionManager extends \net\dryuf\sql\ConnectionManager
 {
 	function			getConnection()
 	{
-		if (!is_null($this->connection)) {
+		if (is_null($this->connection)) {
+			$this->connection = parent::getConnection();
 			$this->connection->setAutoCommit(false);
-			return $this->connection;
 		}
-		return $this->connection = parent::getConnection();
+		$this->connection->increaseNested();
+		return $this->connection;
+	}
+
+	function			releaseConnection($connection)
+	{
+	}
+
+	function			doWrapConnection($nativeConnection)
+	{
+		return new \net\dryuf\sql\SingletonConnectionManagerConnection($this, $nativeConnection);
 	}
 
 	protected			$connection;

@@ -42,12 +42,12 @@ class ConnectionManagerConnection extends \net\dryuf\sql\ConnectionHolder
 	public function			__construct($manager, $targetConnection)
 	{
 		parent::__construct($targetConnection, $manager->getUseCache());
+		$this->manager = $manager;
 	}
 
 	public function			close()
 	{
 		$this->manager->releaseConnection($this);
-		$this->manager = null;
 	}
 
 	public function			setManager($manager)

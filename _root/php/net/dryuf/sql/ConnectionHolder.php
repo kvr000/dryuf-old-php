@@ -41,6 +41,7 @@ class ConnectionHolder implements \net\dryuf\sql\Connection
 {
 	function			__construct($targetConnection, $useCache)
 	{
+		assert($targetConnection instanceof \net\dryuf\sql\Connection, "targetConnection is Connection");;
 		$this->targetConnection = $targetConnection;
 	}
 
