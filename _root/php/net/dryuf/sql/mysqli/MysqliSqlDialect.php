@@ -63,7 +63,7 @@ class MysqliSqlDialect extends \net\dryuf\sql\AbstractSqlDialect
 
 	function			needDeleteAliasFrom()
 	{
-		return true;
+		return 1;
 	}
 
 	function			getQuoteEscape()

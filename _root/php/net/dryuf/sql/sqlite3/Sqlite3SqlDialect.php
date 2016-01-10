@@ -63,7 +63,7 @@ class Sqlite3SqlDialect extends \net\dryuf\sql\AbstractSqlDialect
 
 	function			needDeleteAliasFrom()
 	{
-		return true;
+		return -1;
 	}
 }
 

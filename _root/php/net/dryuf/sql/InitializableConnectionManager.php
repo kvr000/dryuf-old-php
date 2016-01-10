@@ -54,6 +54,11 @@ class InitializableConnectionManager implements \javax\sql\DataSource
 		}
 	}
 
+	function			getConnection()
+	{
+		return $this->supplyingDataSource->getConnection();
+	}
+
 	function			loadScript($connection, $script)
 	{
 		$connection->runDirect(file_get_contents($script));

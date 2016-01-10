@@ -128,7 +128,7 @@ class Sqlite3Connection implements \net\dryuf\sql\Connection
 
 	function			needDeleteAliasFrom()
 	{
-		return false;
+		return -1;
 	}
 
 	function			escapeString($str)
@@ -213,8 +213,14 @@ class Sqlite3Connection implements \net\dryuf\sql\Connection
 			$statement_cv = substr($statement_cv, 0, $c).":v".$id.substr($statement_cv, $c+1);
 			$id++;
 		}
-		if (!($stmt = $this->sqlite3_handle->prepare($statement_cv))) {
-			throw new \net\dryuf\sql\SqlParseException($statement_cv, $this->sqlite3_handle->lastErrorCode(), $this->sqlite3_handle->lastErrorCode(), $this->sqlite3_handle->lastErrorMsg($this->sqlite3_handle));
+		$stmt = null;
+		try {
+			$stmt = $this->sqlite3_handle->prepare($statement_cv);
+		}
+		catch (\net\dryuf\core\PhpException $ex) {
+		}
+		if (is_null($stmt)) {
+			throw new \net\dryuf\sql\SqlParseException($statement_cv, $this->sqlite3_handle->lastErrorCode(), $this->sqlite3_handle->lastErrorCode(), $this->sqlite3_handle->lastErrorMsg());
 		}
 		return new \net\dryuf\sql\sqlite3\Sqlite3Statement($this, $stmt, $id);
 	}

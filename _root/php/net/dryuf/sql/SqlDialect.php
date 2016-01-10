@@ -45,6 +45,17 @@ interface SqlDialect
 	function			conversionTo($type, $expr);
 
 	function			addOffsetLimitRef($statement, &$refBinds, $offset, $limit);
+
+	/**
+	 * Tells whether the alias for DELETE statement is required right after DELETE keyword.
+	 *
+	 * @return -1
+	 * 	if alias for DELETE is unsupported at all
+	 * @return 0
+	 * 	if alias for DELETE is not required
+	 * @return 1
+	 * 	if alias for DELETE is required after DELETE keyword
+	 */
 	function			needDeleteAliasFrom();
 
 	function			getQuoteEscape();

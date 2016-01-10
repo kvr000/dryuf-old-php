@@ -114,7 +114,7 @@ class PgsqlConnection extends \net\dryuf\sql\AbstractConnection
 
 	function			needDeleteAliasFrom()
 	{
-		return false;
+		return 0;
 	}
 
 	function			escapeString($str)

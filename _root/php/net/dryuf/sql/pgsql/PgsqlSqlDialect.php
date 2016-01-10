@@ -63,7 +63,7 @@ class PgsqlSqlDialect extends \net\dryuf\sql\AbstractSqlDialect
 
 	function			needDeleteAliasFrom()
 	{
-		return true;
+		return 1;
 	}
 }
 

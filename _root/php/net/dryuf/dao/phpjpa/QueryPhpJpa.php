@@ -323,6 +323,12 @@ class SourceDef
 		$this->sourceType = $sourceType;
 	}
 
+	function			getSqlAlias()
+	{
+		++$this->sqlAliasUsed;
+		return $this->sqlAlias;
+	}
+
 	/** Type of source - ST. */
 	public				$sourceType;
 
@@ -331,6 +337,9 @@ class SourceDef
 
 	/** SQL Alias of this source. */
 	public				$sqlAlias;
+
+	/** Counter how many times was alias referenced. */
+	public				$sqlAliasUsed = 0;
 
 	/** Field definition of entity (in case of entity). */
 	public				$columnDef;
@@ -597,7 +606,7 @@ class SqlBuilder
 			$columnDef = new ColumnDef();
 			$fieldResult->columnDef = $columnDef;
 			$columnDef->jpaMeta = $lastSourceDef->columnDef->jpaMeta;
-			$this->formatEntityColumns($fieldResult, $lastSourceDef->sqlAlias, $columnDef);
+			$this->formatEntityColumns($fieldResult, $lastSourceDef->getSqlAlias(), $columnDef);
 			array_push($sourceDef->fields, $columnDef);
 			$this->prepareFieldSqlAliases($columnDef);
 			if ($result->sqlArity == 0)
@@ -663,8 +672,15 @@ class SqlBuilder
 		if (count($deleteTree->getFroms()) != 1)
 			throw new \RuntimeException("expected single source in DELETE");
 		$froms = $deleteTree->getFroms()->visit($this);
-		if ($this->dialect->needDeleteAliasFrom())
-			$result->appendSqlString(" ")->appendSqlString($froms->sourceDef->sqlAlias);
+		if (($needAlias = $this->dialect->needDeleteAliasFrom()) != 0) {
+			if ($needAlias < 0) {
+				if ($froms->sourceDef->sqlAliasUsed)
+					throw new \net\dryuf\core\RuntimeException("Driver does not support DELETE alias and this is required by statement");
+			}
+			else {
+				$result->appendSqlString(" ")->appendSqlString($froms->sourceDef->getSqlAlias());
+			}
+		}
 		$result->merge(" FROM ", $froms);
 
 		if ($deleteTree->getWhere())
@@ -719,7 +735,7 @@ class SqlBuilder
 		$columnDef->jpaMeta = $jpaMeta;
 		$columnDef->alias = $sourceDef->alias;
 		$columnDef->sqlAlias = $sourceDef->sqlAlias;
-		$result->setSqlString($jpaMeta->tableName." ".$sourceDef->sqlAlias);
+		$result->setSqlString($jpaMeta->tableName." ".$sourceDef->getSqlAlias());
 
 		return $result;
 	}
@@ -752,7 +768,7 @@ class SqlBuilder
 				$columnDef->name = $name;
 				$columnDef->jpaMeta = $sourceDef->columnDef->jpaMeta;
 				$result->sqlArity = 0;
-				$this->formatEntityColumns($result, $sourceDef->sqlAlias, $columnDef);
+				$this->formatEntityColumns($result, $sourceDef->getSqlAlias(), $columnDef);
 			}
 			else {
 				throw new \RuntimeException("field for unexpected source type: ".$name);
@@ -765,7 +781,7 @@ class SqlBuilder
 			switch ($identifierResult->identifierType) {
 			case IdentifierInfo::II_Member:
 				$result->sqlArity = 0;
-				$this->formatClassField($result, $identifierResult->ownerSourceDef->sqlAlias, $identifierResult->ownerSourceDef->columnDef, $identifierResult->ownerSourceDef->columnDef->jpaMeta->getFieldMeta($name));
+				$this->formatClassField($result, $identifierResult->ownerSourceDef->getSqlAlias(), $identifierResult->ownerSourceDef->columnDef, $identifierResult->ownerSourceDef->columnDef->jpaMeta->getFieldMeta($name));
 				break;
 
 			default:
@@ -998,13 +1014,13 @@ class SqlBuilder
 		$identifier = $this->resolvePath($memberTree);
 		switch ($identifier->identifierType) {
 		case IdentifierInfo::II_Entity:
-			$this->formatClassField($result, $identifier->ownerSourceDef->sqlAlias, $identifier->ownerSourceDef->columnDef, $identifier->ownerSourceDef->columnDef->jpaMeta->getFieldMeta($memberTree->member));
+			$this->formatClassField($result, $identifier->ownerSourceDef->getSqlAlias(), $identifier->ownerSourceDef->columnDef, $identifier->ownerSourceDef->columnDef->jpaMeta->getFieldMeta($memberTree->member));
 			$result->columnDef = $identifier->ownerSourceDef->columnDef;
 			break;
 
 		case IdentifierInfo::II_Member:
 			$result->sqlArity = 0;
-			$this->formatClassField($result, $identifier->ownerSourceDef->sqlAlias, null, $identifier->metaField);
+			$this->formatClassField($result, $identifier->ownerSourceDef->getSqlAlias(), null, $identifier->metaField);
 			$result->columnDef = $columnDef = new ColumnDef();
 			if (!is_null($identifier->metaField->embeddedMeta)) {
 				$columnDef->jpaMeta = $identifier->metaField->embeddedMeta;
@@ -1255,7 +1271,7 @@ class SqlBuilder
 
 		if (!is_null($sourceDef = $context->checkSource($sourceIdentifier))) {
 			if ($sourceDef->type == SourceDef::ST_Entity) {
-				return $sourceDef->sqlAlias;
+				return $sourceDef->getSqlAlias();
 			}
 			else {
 				throw new \RuntimeException("expected source identifier, got $sourceIdentifier");

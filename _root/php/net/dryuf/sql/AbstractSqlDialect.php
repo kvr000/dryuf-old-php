@@ -51,7 +51,7 @@ abstract class AbstractSqlDialect implements \net\dryuf\sql\SqlDialect
 
 	function			needDeleteAliasFrom()
 	{
-		return true;
+		return 1;
 	}
 
 	function			getQuoteEscape()

@@ -122,7 +122,7 @@ class MysqliConnection extends \net\dryuf\sql\AbstractConnection
 
 	function			needDeleteAliasFrom()
 	{
-		return true;
+		return 1;
 	}
 
 	function			escapeString($str)

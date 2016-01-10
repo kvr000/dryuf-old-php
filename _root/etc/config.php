@@ -14,6 +14,8 @@ require_once "net/dryuf/core/Dryuf.php";
 \net\dryuf\core\Dryuf::$workRoot					= $workRoot;
 \net\dryuf\core\Dryuf::$config['appRoot']				= getcwd()."/";
 
+\net\dryuf\core\Dryuf::$config['net.dryuf.test.useEmbeddedSqlite']	= false;
+
 \net\dryuf\core\Dryuf::$printUnhandled					= 3;
 
 \net\dryuf\core\Dryuf::$config['localize.languages']			= array();
@@ -28,8 +30,12 @@ require_once "net/dryuf/core/Dryuf.php";
 
 \net\dryuf\core\Dryuf::$config['app.sysRoles']             		= array("guest", "free", "user", "admin", "sysconf", "extreme", "translation", "devel", "timing");
 
-\net\dryuf\core\Dryuf::$config['net.dryuf.dao.appdb']			= "driver=net.dryuf.sql.mysqli.MysqliConnection;host=localhost;user=dryuf;pass=dryuf;db=dryuf";
-#\net\dryuf\core\Dryuf::$config['net.dryuf.dao.appdb']			= "driver=net.dryuf.sql.sqlite3.Sqlite3Connection;file=:memory:;open_mode=2";
+if (\net\dryuf\core\Dryuf::$config['net.dryuf.test.useEmbeddedSqlite']) {
+	\net\dryuf\core\Dryuf::$config['net.dryuf.dao.appdb']			= "driver=net.dryuf.sql.sqlite3.Sqlite3Connection;file=:memory:;open_mode=2";
+}
+else {
+	\net\dryuf\core\Dryuf::$config['net.dryuf.dao.appdb']			= "driver=net.dryuf.sql.mysqli.MysqliConnection;host=localhost;user=dryuf;pass=dryuf;db=dryuf";
+}
 \net\dryuf\core\Dryuf::$config['net.dryuf.dao.nominatim']		= "driver=net.dryuf.sql.pgsql.PgsqlConnection;db=nominatim";
 
 \net\dryuf\core\Dryuf::$config['net.dryuf.nocache']	       		= false;
@@ -47,10 +53,15 @@ require_once "net/dryuf/core/Dryuf.php";
 \net\dryuf\core\Dryuf::$config['adminShow']				= "user";
 
 
-\net\dryuf\core\Dryuf::$beans['javax.persistence.EntityManager-dryuf']	= function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\dao\phpjpa\EntityManagerPhpJpa(), $name, array("persistenceUnit" => "dryuf", "dialect" => new \net\dryuf\sql\mysqli\MysqliSqlDialect(), "exceptionTranslator" => new \net\dryuf\dao\mysql\JpaExceptionTranslatorMysql(), "dataSource" => $appContainer->getBean("javax.sql.DataSource-dryuf"))); };
+if (\net\dryuf\core\Dryuf::$config['net.dryuf.test.useEmbeddedSqlite']) {
+	\net\dryuf\core\Dryuf::$beans['javax.persistence.EntityManager-dryuf']	= function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\dao\phpjpa\EntityManagerPhpJpa(), $name, array("persistenceUnit" => "dryuf", "dialect" => new \net\dryuf\sql\sqlite3\Sqlite3SqlDialect(), "exceptionTranslator" => new \net\dryuf\dao\mysql\JpaExceptionTranslatorMysql(), "dataSource" => $appContainer->getBean("javax.sql.DataSource-dryuf"))); };
+	\net\dryuf\core\Dryuf::$beans['javax.sql.DataSource-dryuf']		= function($appContainer, $name) { return new \net\dryuf\sql\InitializableConnectionManager($appContainer->postProcessBean(new \net\dryuf\sql\SingletonConnectionManager(), $name, array("connectUrl" => \net\dryuf\core\Dryuf::$config['net.dryuf.dao.appdb'], 'useCache' => 0)), array("test.sql")); };
+}
+else {
+	\net\dryuf\core\Dryuf::$beans['javax.persistence.EntityManager-dryuf']	= function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\dao\phpjpa\EntityManagerPhpJpa(), $name, array("persistenceUnit" => "dryuf", "dialect" => new \net\dryuf\sql\mysqli\MysqliSqlDialect(), "exceptionTranslator" => new \net\dryuf\dao\mysql\JpaExceptionTranslatorMysql(), "dataSource" => $appContainer->getBean("javax.sql.DataSource-dryuf"))); };
+	\net\dryuf\core\Dryuf::$beans['javax.sql.DataSource-dryuf']		= function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\sql\ConnectionManager(), $name, array("connectUrl" => \net\dryuf\core\Dryuf::$config['net.dryuf.dao.appdb'], 'useCache' => 0)); };
+}
 \net\dryuf\core\Dryuf::$beans['net.dryuf.transaction.TransactionManager-dryuf'] = function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\dao\phpjpa\JpaTransactionManager($appContainer), $name, array("name" => $name, "entityManager" => $appContainer->getRealBean("javax.persistence.EntityManager-dryuf"))); };
-\net\dryuf\core\Dryuf::$beans['javax.sql.DataSource-dryuf']		= function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\sql\ConnectionManager(), $name, array("connectUrl" => \net\dryuf\core\Dryuf::$config['net.dryuf.dao.appdb'], 'useCache' => 0)); };
-#\net\dryuf\core\Dryuf::$beans['javax.sql.DataSource-dryuf']		= function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\sql\SingletonConnectionManager(), $name, array("connectUrl" => \net\dryuf\core\Dryuf::$config['net.dryuf.dao.appdb'], 'useCache' => 0)); };
 \net\dryuf\core\Dryuf::$beans['javax.sql.DataSource-nominatim']		= function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\sql\ConnectionManager(), $name, array("connectUrl" => \net\dryuf\core\Dryuf::$config['net.dryuf.dao.nominatim'], 'useCache' => 0)); };
 
 \net\dryuf\core\Dryuf::$beans['resourceResolver']			= function($appContainer, $name) { return $appContainer->postProcessBean(new \net\dryuf\io\ClassPathResourceResolver(), $name, null); };
