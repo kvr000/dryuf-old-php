@@ -749,32 +749,6 @@ class ClassMetaJava extends \net\dryuf\core\Object implements \net\dryuf\app\Cla
 	protected			$pkeyDef;
 
 	/**
-	@\net\dryuf\core\Type(type = 'java\lang\String')
-	*/
-	protected			$dbSource;
-
-	/**
-	@\net\dryuf\core\Type(type = 'java\lang\String')
-	*/
-	public function			getDbSource()
-	{
-		return $this->dbSource;
-	}
-
-	/**
-	@\net\dryuf\core\Type(type = 'java\lang\String')
-	*/
-	protected			$dbTable;
-
-	/**
-	@\net\dryuf\core\Type(type = 'java\lang\String')
-	*/
-	public function			getDbTable()
-	{
-		return $this->dbTable;
-	}
-
-	/**
 	@\net\dryuf\core\Type(type = 'net\dryuf\meta\ActionDef[]')
 	*/
 	protected			$actionDefs;

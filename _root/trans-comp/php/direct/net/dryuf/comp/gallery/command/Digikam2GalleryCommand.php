@@ -36,7 +36,7 @@ class Digikam2GalleryCommand extends \net\dryuf\process\command\AbstractCommand
 	*/
 	public function			reportUsage($reason)
 	{
-		return $this->commandRunner->reportUsage($reason, "Options: -f dbfile [-m] [-O] -r root -g gallery\n\t-f db-file\t\tpath to digikam database\n\t-p gallery-root\t\tgallery root\n\t-g gallery-name\t\tgallery name\n\t-m\t\t\tis multi section gallery\n\t-O\t\t\tdo not use orig directory\n\t-s sort-field\t\tsort field\n\t-L\t\t\tlist galleries\n\t-S\t\t\tgenerated scaled\n");
+		return $this->commandRunner->reportUsage($reason, "Options: -f dbfile [-m] [-O] -p root -g gallery\n\t-f db-file\t\tpath to digikam database\n\t-p gallery-root\t\tgallery root\n\t-g gallery-name\t\tgallery name\n\t-m\t\t\tis multi section gallery\n\t-O\t\t\tdo not use orig directory\n\t-s sort-field\t\tsort field\n\t-L\t\t\tlist galleries\n\t-S\t\t\tgenerated scaled\n");
 	}
 
 	/**

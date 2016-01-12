@@ -212,16 +212,6 @@ interface ClassMeta
 	function			getEntityRoles();
 
 	/**
-	@\net\dryuf\core\Type(type = 'java\lang\String')
-	*/
-	function			getDbSource();
-
-	/**
-	@\net\dryuf\core\Type(type = 'java\lang\String')
-	*/
-	function			getDbTable();
-
-	/**
 	@\net\dryuf\core\Type(type = 'java\lang\String[]')
 	*/
 	function			getFieldOrder();
