@@ -189,7 +189,7 @@ interface PageContext extends \java\lang\AutoCloseable
 	/**
 	@\net\dryuf\core\Type(type = 'boolean')
 	*/
-	function			redirect(\string $url);
+	function			redirect(string $url);
 
 	/**
 	@\net\dryuf\core\Type(type = 'void')

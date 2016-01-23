@@ -267,7 +267,7 @@ class DefaultPageContext extends \net\dryuf\core\Object implements \net\dryuf\sr
 	/**
 	@\net\dryuf\core\Type(type = 'boolean')
 	*/
-	public function			redirect(\string $url)
+	public function			redirect(string $url)
 	{
 		if (!is_null($this->redirected)) {
 			throw new \net\dryuf\core\RuntimeException("already redirected to ".$this->redirected);

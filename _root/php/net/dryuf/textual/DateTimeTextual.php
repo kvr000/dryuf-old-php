@@ -48,7 +48,7 @@ class DateTimeTextual extends \net\dryuf\textual\DateTimeBaseTextual
 	*/
 	public function			format($internal, $style)
 	{
-		return date('d.m.Y H:i:s', int($internal/1000));
+		return date('d.m.Y H:i:s', intval($internal/1000));
 	}
 
 	/**
